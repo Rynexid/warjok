@@ -195,7 +195,7 @@ export function printReport(data: ReportPrintData) {
   <table><thead><tr><th>Produk</th><th>SKU</th><th class="num">Stok</th><th class="num">Minimum</th></tr></thead>
   <tbody>${lowStockRows || '<tr><td colspan="4" class="muted">Semua stok aman.</td></tr>'}</tbody></table>
 
-  <div class="footer">Niraya POS · Data contoh tersimpan di browser · Laporan dibuat otomatis</div>
+  <div class="footer">Warjok POS · Data contoh tersimpan di browser · Laporan dibuat otomatis</div>
 </body>
 </html>`)
 

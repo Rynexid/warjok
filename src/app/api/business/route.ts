@@ -13,7 +13,7 @@ import { createSeedData } from "@/lib/business-seed";
 
 async function requireSession() {
   const cookieStore = await cookies();
-  const demo = cookieStore.get("niraya_demo")?.value;
+  const demo = cookieStore.get("warjok_demo")?.value;
   if (demo === "1") {
     return { id: "demo-user" } as any;
   }
@@ -41,7 +41,7 @@ const BusinessQuerySchema = z.object({
 
 export async function GET(request: Request) {
   const cookieStore = await cookies();
-  const demo = cookieStore.get("niraya_demo")?.value;
+  const demo = cookieStore.get("warjok_demo")?.value;
   if (demo === "1") {
     return NextResponse.json(createSeedData());
   }
@@ -85,7 +85,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const cookieStore = await cookies();
-  const demo = cookieStore.get("niraya_demo")?.value;
+  const demo = cookieStore.get("warjok_demo")?.value;
   if (demo === "1") {
     return NextResponse.json({ ok: true });
   }

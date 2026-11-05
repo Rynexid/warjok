@@ -132,7 +132,7 @@ export function SettingsPage() {
     const url = URL.createObjectURL(blob)
     const anchor = document.createElement('a')
     anchor.href = url
-    anchor.download = `niraya-data-${new Date().toISOString().slice(0, 10)}.json`
+    anchor.download = `warjok-data-${new Date().toISOString().slice(0, 10)}.json`
     anchor.click()
     URL.revokeObjectURL(url)
 
@@ -174,7 +174,7 @@ export function SettingsPage() {
                     <FormItem className="sm:col-span-2">
                       <FormLabel>Nama bisnis</FormLabel>
                       <FormControl>
-                        <Input placeholder="Niraya Coffee & Bakery" {...field} />
+                        <Input placeholder="Warjok Coffee & Bakery" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -188,7 +188,7 @@ export function SettingsPage() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="hello@niraya.id" {...field} />
+                        <Input type="email" placeholder="hello@warjok.id" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -459,7 +459,7 @@ export function SettingsPage() {
                 </Badge>
               </div>
               <p className="mt-3 rounded-lg bg-muted/40 p-2.5 text-[11px] text-muted-foreground">
-                Sesi ini terhubung ke database Niraya. Perubahan tersimpan di server.
+                Sesi ini terhubung ke database Warjok. Perubahan tersimpan di server.
               </p>
             </section>
 
@@ -480,7 +480,7 @@ export function SettingsPage() {
                 </Button>
               </div>
               <p className="mt-3 text-[11px] text-muted-foreground">
-                Niraya POS · data real · penyimpanan Neon Postgres
+                Warjok POS · data real · penyimpanan Neon Postgres
               </p>
             </section>
           </div>

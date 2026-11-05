@@ -14,7 +14,7 @@ const SIDEBAR_MIN_WIDTH = 200
 const SIDEBAR_MAX_WIDTH = 360
 const SIDEBAR_DEFAULT_WIDTH = 260
 const SIDEBAR_COLLAPSED_WIDTH = 68
-const SIDEBAR_WIDTH_STORAGE_KEY = "niraya.sidebar-width.v1"
+const SIDEBAR_WIDTH_STORAGE_KEY = "warjok.sidebar-width.v1"
 
 function clampWidth(value: number) {
   return Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, value))

@@ -150,7 +150,7 @@ export function printQris({
         <tr class="total"><td>Total</td><td>${formatCurrency(amount)}</td></tr>
       </table>
       <p class="hint">Scan kode ini dengan aplikasi pembayaran apa pun (GoPay, OVO, DANA, ShopeePay, atau mobile banking). Nominal sudah terisi otomatis.</p>
-      <p class="footer">Niraya POS &mdash; kasir, stok, dan laporan.</p>
+      <p class="footer">Warjok POS &mdash; kasir, stok, dan laporan.</p>
     </main>
   `
 
@@ -182,7 +182,7 @@ export function printReceipt({
   cashReceived,
   change,
   cashier,
-  storeName = 'NIRAYA',
+  storeName = 'WARJOK',
   logoUrl,
   details,
 }: PrintReceiptInput): boolean {
@@ -240,7 +240,7 @@ export function printReceipt({
     ${cashRows}
     <div class="dashed"></div>
     <p class="center">Terima kasih atas kunjungan Anda</p>
-    <p class="center muted">Niraya POS</p>
+    <p class="center muted">Warjok POS</p>
   </main>`
 
   return openPrintWindow(`Struk ${orderId}`, body)

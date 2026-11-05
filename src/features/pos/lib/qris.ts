@@ -4,7 +4,7 @@
  */
 
 export const MERCHANT = {
-  name: 'NIRAYA',
+  name: 'WARJOK',
   city: 'JAKARTA',
   /** National Merchant ID used on the printed QRIS card. */
   nmid: 'ID1023456789012',

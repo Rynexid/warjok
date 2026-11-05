@@ -90,7 +90,7 @@ async function seed() {
       .values({
         id: DEFAULT_BUSINESS_ID,
         name: data.settings.businessName,
-        slug: "niraya",
+        slug: "warjok",
         legalName: data.settings.businessName,
         currency: data.settings.currency,
         timezone: data.settings.timezone,

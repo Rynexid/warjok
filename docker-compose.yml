@@ -1,18 +1,18 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: niraya-postgres
+    container_name: warjok-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: niraya
-      POSTGRES_PASSWORD: niraya
-      POSTGRES_DB: niraya
+      POSTGRES_USER: warjok
+      POSTGRES_PASSWORD: warjok
+      POSTGRES_DB: warjok
     ports:
       - "5432:5432"
     volumes:
-      - niraya_pg_data:/var/lib/postgresql/data
+      - warjok_pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U niraya -d niraya"]
+      test: ["CMD-SHELL", "pg_isready -U warjok -d warjok"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -21,7 +21,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
-    container_name: niraya-api
+    container_name: warjok-api
     restart: unless-stopped
     depends_on:
       postgres:
@@ -29,7 +29,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: postgresql://niraya:niraya@postgres:5432/niraya
+      DATABASE_URL: postgresql://warjok:warjok@postgres:5432/warjok
       BETTER_AUTH_SECRET: change-me-in-production
       BETTER_AUTH_URL: http://localhost:4000
       CORS_ORIGIN: http://localhost:8080
@@ -40,7 +40,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.web
-    container_name: niraya-web
+    container_name: warjok-web
     restart: unless-stopped
     depends_on:
       - api
@@ -48,4 +48,4 @@ services:
       - "8080:80"
 
 volumes:
-  niraya_pg_data:
+  warjok_pg_data:

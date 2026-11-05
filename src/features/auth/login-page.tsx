@@ -46,7 +46,7 @@ type LoginValues = z.infer<typeof loginSchema>
 const FEATURES = [
   'Katalog, stok, dan transaksi memakai satu sumber data.',
   'Laporan dan dashboard dihitung dari penjualan yang tersimpan.',
-  'Semua data tersimpan di database Niraya.',
+  'Semua data tersimpan di database Warjok.',
 ] as const
 
 /**
@@ -113,7 +113,7 @@ export function LoginPage() {
               Satu tempat untuk katalog, penjualan, dan stok.
             </h1>
             <p className="text-sm leading-relaxed text-sidebar-foreground/70">
-              Niraya menyatukan terminal kasir, inventori, pelanggan, dan
+              Warjok menyatukan terminal kasir, inventori, pelanggan, dan
               laporan tanpa berpindah aplikasi.
             </p>
           </div>
@@ -134,7 +134,7 @@ export function LoginPage() {
         </div>
 
         <p className="max-w-sm text-xs leading-relaxed text-sidebar-foreground/50">
-          Niraya POS oleh Rynex.
+          Warjok POS oleh Rynex.
         </p>
       </aside>
 
@@ -150,7 +150,7 @@ export function LoginPage() {
 
           <div className="space-y-2">
             <h1 className="text-2xl font-semibold tracking-tight">
-              Masuk ke Niraya
+              Masuk ke Warjok
             </h1>
             <p className="text-sm text-muted-foreground">
               Gunakan email dan kata sandi akun Anda untuk melanjutkan.
@@ -174,7 +174,7 @@ export function LoginPage() {
                         type="email"
                         inputMode="email"
                         autoComplete="username"
-                        placeholder="nama@niraya.id"
+                        placeholder="nama@warjok.id"
                         {...field}
                       />
                     </FormControl>

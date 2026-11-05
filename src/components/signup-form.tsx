@@ -105,10 +105,10 @@ export function SignupForm({
     >
       <div className="space-y-1.5 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
-          Buat akun Niraya
+          Buat akun Warjok
         </h1>
         <p className="text-sm text-balance text-muted-foreground">
-          Isi data di bawah untuk mulai menggunakan Niraya POS.
+          Isi data di bawah untuk mulai menggunakan Warjok POS.
         </p>
       </div>
 
@@ -139,7 +139,7 @@ export function SignupForm({
             type="email"
             inputMode="email"
             autoComplete="email"
-            placeholder="nama@niraya.id"
+            placeholder="nama@warjok.id"
             aria-invalid={!!errors.email}
             {...register("email")}
           />

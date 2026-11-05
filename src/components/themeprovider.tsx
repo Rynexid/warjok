@@ -20,7 +20,7 @@ type ThemeContextValue = {
   setTheme: (theme: Theme) => void
 }
 
-const STORAGE_KEY = 'niraya-theme'
+const STORAGE_KEY = 'warjok-theme'
 const ThemeContext = createContext<ThemeContextValue | null>(null)
 
 function readStoredTheme(): Theme {

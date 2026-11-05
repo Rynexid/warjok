@@ -382,7 +382,7 @@ function CheckoutBody({
       orderId: receipt?.orderId ?? orderId,
       amount: receipt?.totals.total ?? totals.total,
       qrDataUrl,
-      merchantName: 'NIRAYA',
+      merchantName: 'WARJOK',
       merchantCity: 'JAKARTA',
       nmid: 'ID1023456789012',
       logoUrl: '/Logo.png',
@@ -517,7 +517,7 @@ function CheckoutBody({
               storeName={receipt.storeName}
               logoSrc="/Logo.png"
               details={orderDetails}
-              footer={receipt.receiptFooter || 'Terima kasih • Niraya'}
+              footer={receipt.receiptFooter || 'Terima kasih • Warjok'}
               labels={{
                 receipt: 'No. struk',
                 date: 'Waktu',

@@ -103,7 +103,7 @@ export function HelpPage() {
     <div className="flex flex-col gap-5">
       <PageHeader
         title="Bantuan"
-        description="Panduan singkat untuk menjalankan operasional harian di Niraya."
+        description="Panduan singkat untuk menjalankan operasional harian di Warjok."
         badge={
           <Badge variant="outline">
             Data real

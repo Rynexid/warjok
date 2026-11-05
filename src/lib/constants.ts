@@ -1,5 +1,5 @@
 /** Shared, non-visual constants used across the UI kit. */
-export const APP_NAME = 'Niraya POS'
+export const APP_NAME = 'Warjok POS'
 export const APP_VENDOR = 'Rynex'
 
 export const DEFAULT_LOCALE = 'id-ID'

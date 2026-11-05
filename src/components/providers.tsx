@@ -46,8 +46,8 @@ export function BusinessDataProvider({
         staff: [],
         transactions: [],
         movements: [],
-        settings: {
-          businessName: "Niraya POS",
+          settings: {
+          businessName: "Warjok POS",
           address: "",
           phone: "",
           email: "",
@@ -56,7 +56,7 @@ export function BusinessDataProvider({
           taxRate: 0,
           memberDiscountRate: 0,
           lowStockThreshold: 0,
-          receiptFooter: "Terima kasih • Niraya",
+          receiptFooter: "Terima kasih • Warjok",
         },
         ready: true,
       })

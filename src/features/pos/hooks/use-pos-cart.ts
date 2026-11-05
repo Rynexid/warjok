@@ -12,7 +12,7 @@ type StoredEntry = {
   quantity: number
 }
 
-const STORAGE_KEY = 'niraya.pos.cart.v1'
+const STORAGE_KEY = 'warjok.pos.cart.v1'
 
 /**
  * Rehydrate the in-progress order from sessionStorage. Only ids and quantities

@@ -5,7 +5,7 @@ export type LogoSize = 'sm' | 'md' | 'lg'
 export interface LogoProps {
   /** Ukuran mark/logo: kecil, sedang, besar. */
   size?: LogoSize
-  /** Tampilkan tulisan NIRAYA dan subjudul. */
+  /** Tampilkan tulisan WARJOK dan subjudul. */
   label?: boolean
   className?: string
 }
@@ -31,7 +31,7 @@ export function Logo({
     <div className={cn('flex items-start gap-2', className)}>
       <img
         src="/Logo.png"
-        alt="NIRAYA"
+        alt="WARJOK"
         className={markSize[size]}
         loading="eager"
         decoding="async"
@@ -39,7 +39,7 @@ export function Logo({
       {label && (
         <div className="flex flex-col leading-none text-left">
           <span className={cn(textSize[size], 'font-semibold tracking-tight')}>
-            NIRAYA
+            WARJOK
           </span>
           <span className="text-[10px] leading-none text-muted-foreground">
             Enterprise POS

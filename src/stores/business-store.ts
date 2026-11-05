@@ -145,7 +145,7 @@ export const useBusinessStore = create<BusinessState>()((set, get) => ({
   transactions: [],
   movements: [],
   settings: {
-    businessName: 'Niraya POS',
+    businessName: 'Warjok POS',
     address: '',
     phone: '',
     email: '',
@@ -154,7 +154,7 @@ export const useBusinessStore = create<BusinessState>()((set, get) => ({
     taxRate: 0,
     memberDiscountRate: 0,
     lowStockThreshold: 0,
-    receiptFooter: 'Terima kasih • Niraya',
+    receiptFooter: 'Terima kasih • Warjok',
   },
   ready: false,
 

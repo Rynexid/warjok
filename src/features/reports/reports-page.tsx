@@ -141,7 +141,7 @@ export function ReportsPage() {
   const handleExport = () => {
     downloadTransactionsCsv(
       rangeTransactions,
-      `niraya-laporan-${from}-${to}.csv`,
+      `warjok-laporan-${from}-${to}.csv`,
     )
     toast.success('Laporan diekspor', {
       description: `${formatNumber(rangeTransactions.length)} transaksi · CSV`,

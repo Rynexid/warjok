@@ -1,7 +1,7 @@
 import { pgSchema } from "drizzle-orm/pg-core";
 
 /**
- * Schema organisasi database NIRAYA POS.
+ * Schema organisasi database Warjok POS.
  *
  * Domain schemas — tabel bisnis dipisah per domain untuk struktur yang lebih rapi.
  *

@@ -136,7 +136,7 @@ function StaffFormBody({
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="nama@niraya.id" {...field} />
+                <Input type="email" placeholder="nama@warjok.id" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

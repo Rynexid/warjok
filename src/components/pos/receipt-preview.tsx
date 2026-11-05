@@ -67,7 +67,7 @@ export function ReceiptPreview({
   discount,
   tax,
   currency = DEFAULT_CURRENCY,
-  storeName = 'Niraya POS',
+  storeName = 'Warjok POS',
   storeAddress,
   logoSrc,
   cashier,

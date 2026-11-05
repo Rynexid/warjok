@@ -1,4 +1,4 @@
-# Niraya POS
+# Warjok POS
 
 Point of Sale (POS) web app built with **Next.js 16 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS v4/shadcn**, **Drizzle ORM**, and **Neon Postgres + Neon Auth**.
 

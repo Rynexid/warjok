@@ -288,13 +288,13 @@ const CUSTOMER_ROWS: readonly Omit<Customer, 'joinedAt'>[] = [
 ]
 
 const STAFF_ROWS: readonly Omit<Staff, 'joinedAt' | 'lastActive'>[] = [
-  { id: 's-arya', name: 'Arya Wibowo', email: 'arya@niraya.id', role: 'owner', status: 'active' },
-  { id: 's-nadia', name: 'Nadia Kusuma', email: 'nadia@niraya.id', role: 'admin', status: 'active' },
-  { id: 's-bagas', name: 'Bagas Pratama', email: 'bagas@niraya.id', role: 'manager', status: 'active' },
-  { id: 's-sarah', name: 'Sarah Vance', email: 'sarah@niraya.id', role: 'cashier', status: 'active' },
-  { id: 's-rizky', name: 'Rizky Ananda', email: 'rizky@niraya.id', role: 'cashier', status: 'active' },
-  { id: 's-maya', name: 'Maya Anggraini', email: 'maya@niraya.id', role: 'cashier', status: 'inactive' },
-  { id: 's-yoga', name: 'Yoga Saputra', email: 'yoga@niraya.id', role: 'cashier', status: 'active' },
+  { id: 's-arya', name: 'Arya Wibowo', email: 'arya@warjok.id', role: 'owner', status: 'active' },
+  { id: 's-nadia', name: 'Nadia Kusuma', email: 'nadia@warjok.id', role: 'admin', status: 'active' },
+  { id: 's-bagas', name: 'Bagas Pratama', email: 'bagas@warjok.id', role: 'manager', status: 'active' },
+  { id: 's-sarah', name: 'Sarah Vance', email: 'sarah@warjok.id', role: 'cashier', status: 'active' },
+  { id: 's-rizky', name: 'Rizky Ananda', email: 'rizky@warjok.id', role: 'cashier', status: 'active' },
+  { id: 's-maya', name: 'Maya Anggraini', email: 'maya@warjok.id', role: 'cashier', status: 'inactive' },
+  { id: 's-yoga', name: 'Yoga Saputra', email: 'yoga@warjok.id', role: 'cashier', status: 'active' },
 ]
 
 const CASHIERS = ['Sarah Vance', 'Rizky Ananda', 'Yoga Saputra', 'Bagas Pratama'] as const
@@ -306,16 +306,16 @@ const VOID_REASONS = [
 ] as const
 
 export const BUSINESS_SETTINGS: BusinessSettings = {
-  businessName: 'Niraya Coffee & Bakery',
+  businessName: 'Warjok Coffee & Bakery',
   address: 'Jl. Senopati No. 24, Kebayoran Baru, Jakarta Selatan 12190',
   phone: '+62 812 3456 7890',
-  email: 'hello@niraya.id',
+  email: 'hello@warjok.id',
   currency: 'IDR',
   timezone: 'Asia/Jakarta',
   taxRate: 0.1,
   memberDiscountRate: 0.1,
   lowStockThreshold: 5,
-  receiptFooter: 'Terima kasih telah berkunjung • Niraya',
+  receiptFooter: 'Terima kasih telah berkunjung • Warjok',
 }
 
 export function createSeedData() {

@@ -5,7 +5,7 @@ const connectionString = process.env.DATABASE_URL || "postgres://dummy:dummy@loc
 
 /**
  * Drizzle selalu menuliskan nama schema secara eksplisit (mis.
- * `"niraya"."products"`), jadi tidak perlu mengatur `search_path` di koneksi.
+ * `"core"."Users"`), jadi tidak perlu mengatur `search_path` di koneksi.
  * Ini juga menghindari batasan startup parameter pada koneksi pooled Neon.
  */
 export const pool = new Pool({ connectionString });

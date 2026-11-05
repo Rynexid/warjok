@@ -21,7 +21,7 @@ const themeOptions = [
 ] as const
 
 /**
- * Theme switcher. The preference is persisted under the `niraya-theme` key;
+ * Theme switcher. The preference is persisted under the `warjok-theme` key;
  * an inline script in `index.html` applies it before paint.
  */
 export function ThemeToggle() {

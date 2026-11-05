@@ -14,8 +14,8 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Niraya POS",
-  description: "Niraya POS - Point of Sale System",
+  title: "Warjok POS",
+  description: "Warjok POS - Point of Sale System",
   icons: {
     icon: [
       { url: "/favicon/favicon.ico" },

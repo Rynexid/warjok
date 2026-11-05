@@ -84,7 +84,7 @@ export function LoginForm({
     >
       <div className="space-y-1.5 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
-          Masuk ke Niraya
+          Masuk ke Warjok
         </h1>
         <p className="text-sm text-balance text-muted-foreground">
           Gunakan email dan kata sandi akun Anda untuk melanjutkan.
@@ -105,7 +105,7 @@ export function LoginForm({
             type="email"
             inputMode="email"
             autoComplete="email"
-            placeholder="nama@niraya.id"
+            placeholder="nama@warjok.id"
             aria-invalid={!!errors.email}
             {...register("email")}
           />
