@@ -1,8 +1,10 @@
 "use client";
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { ImageIcon, Link2Icon, UploadIcon, XIcon } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -118,6 +120,35 @@ function ProductFormBody({
       status: product?.status ?? 'active',
     },
   })
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [imageMode, setImageMode] = useState<'upload' | 'url'>(() =>
+    product?.imageUrl && !String(product.imageUrl).startsWith('data:') ? 'url' : 'upload',
+  )
+  const imageUrl = form.watch('imageUrl') || ''
+
+  function handleImageFile(file: File | null) {
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      toast.error('File harus berupa gambar.')
+      return
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Ukuran gambar maksimal 2MB.')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : ''
+      if (!result) {
+        toast.error('Gagal membaca file gambar.')
+        return
+      }
+      form.setValue('imageUrl', result, { shouldDirty: true, shouldValidate: true })
+      setImageMode('upload')
+    }
+    reader.onerror = () => toast.error('Gagal membaca file gambar.')
+    reader.readAsDataURL(file)
+  }
 
   // Keep the category valid if the list changes while the dialog is open.
   useEffect(() => {
@@ -352,12 +383,89 @@ function ProductFormBody({
             name="imageUrl"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel>URL gambar</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://…" {...field} />
-                </FormControl>
+                <FormLabel>Gambar produk</FormLabel>
+                <div className="space-y-3 rounded-xl border p-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={imageMode === 'upload' ? 'default' : 'outline'}
+                      className="rounded-lg"
+                      onClick={() => {
+                        setImageMode('upload')
+                        fileInputRef.current?.click()
+                      }}
+                    >
+                      <UploadIcon className="size-4" /> Upload dari perangkat
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={imageMode === 'url' ? 'default' : 'outline'}
+                      className="rounded-lg"
+                      onClick={() => setImageMode('url')}
+                    >
+                      <Link2Icon className="size-4" /> Pakai link
+                    </Button>
+                    {imageUrl ? (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        className="rounded-lg text-muted-foreground"
+                        onClick={() => {
+                          field.onChange('')
+                          if (fileInputRef.current) fileInputRef.current.value = ''
+                        }}
+                      >
+                        <XIcon className="size-4" /> Hapus
+                      </Button>
+                    ) : null}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        handleImageFile(e.target.files?.[0] || null)
+                        e.target.value = ''
+                      }}
+                    />
+                  </div>
+
+                  {imageMode === 'url' ? (
+                    <FormControl>
+                      <Input
+                        placeholder="https://contoh.com/gambar.jpg"
+                        value={String(imageUrl).startsWith('data:') ? '' : field.value || ''}
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
+                    </FormControl>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Pilih gambar dari perangkat (JPG/PNG/WebP, maks 2MB). Gambar akan disimpan sebagai data.
+                    </p>
+                  )}
+
+                  {imageUrl ? (
+                    <div className="flex items-center gap-3">
+                      <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border bg-muted/30">
+                        <img src={imageUrl} alt="Preview produk" className="size-full object-cover" />
+                      </div>
+                      <div className="min-w-0 text-xs text-muted-foreground">
+                        <p className="font-medium text-foreground">Preview gambar</p>
+                        <p className="truncate">{String(imageUrl).startsWith('data:') ? 'Diunggah dari perangkat' : imageUrl}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 rounded-lg border border-dashed px-3 py-2 text-xs text-muted-foreground">
+                      <ImageIcon className="size-4" />
+                      <span>Belum ada gambar. Opsional — ikon produk dipakai jika kosong.</span>
+                    </div>
+                  )}
+                </div>
                 <FormDescription>
-                  Opsional. Biarkan kosong untuk memakai ikon produk.
+                  Bisa upload dari perangkat atau gunakan link gambar.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

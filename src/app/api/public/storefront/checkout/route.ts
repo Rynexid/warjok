@@ -27,7 +27,7 @@ const CheckoutSchema = z.object({
   notes: z.string().optional(),
   orderType: z.enum(["dine-in", "takeaway"]).default("takeaway"),
   tableNumber: z.string().optional(),
-  paymentMethod: z.string().default("manual_transfer"),
+  paymentMethod: z.string().default("qris"),
 });
 
 function roundMoney(value: number) {
@@ -124,9 +124,11 @@ export async function POST(request: Request) {
     const total = roundMoney(taxableSubtotal + tax);
 
     const paymentInstructions = {
-      bankName: "BCA",
-      accountName: "Warjok Coffee & Bakery",
-      accountNumber: "123 456 7890",
+      type: "qris",
+      label: "QRIS Warjok",
+      merchantName: "Warjok Coffee & Bakery",
+      qrisImageUrl: "/WarjokQris.jpeg",
+      note: "Scan QRIS di atas, bayar sesuai total pesanan, lalu unggah bukti pembayaran.",
     };
 
     const order = await createStorefrontOrder({

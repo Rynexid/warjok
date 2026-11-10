@@ -33,6 +33,7 @@ export type StorefrontOrder = {
   paymentInstructions?: any | null;
   proofSubmitted: boolean;
   proofUrl?: string | null;
+  rejectionReason?: string | null;
   paidAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -121,6 +122,7 @@ export async function submitProof(orderId: string, proofUrl: string) {
       proofSubmitted: true,
       proofUrl,
       paymentStatus: "awaiting_verification",
+      rejectionReason: null,
       updatedAt: new Date(),
     })
     .where(eq(storefrontOrders.id, orderId))
@@ -128,13 +130,15 @@ export async function submitProof(orderId: string, proofUrl: string) {
   return row ? mapOrder(row) : null;
 }
 
-export async function verifyOrder(orderId: string, approved: boolean) {
+export async function verifyOrder(orderId: string, approved: boolean, reason?: string | null) {
+  const rejectionReason = approved ? null : String(reason || "").trim() || "Bukti pembayaran ditolak.";
   const [row] = await db
     .update(storefrontOrders)
     .set({
       paymentStatus: approved ? "verified" : "rejected",
       status: approved ? "confirmed" : "pending",
       paidAt: approved ? new Date() : null,
+      rejectionReason,
       updatedAt: new Date(),
     })
     .where(eq(storefrontOrders.id, orderId))
@@ -171,6 +175,7 @@ function mapOrder(row: any): StorefrontOrder {
     paymentInstructions: row.paymentInstructions,
     proofSubmitted: row.proofSubmitted,
     proofUrl: row.proofUrl,
+    rejectionReason: row.rejectionReason ?? null,
     paidAt: row.paidAt,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,

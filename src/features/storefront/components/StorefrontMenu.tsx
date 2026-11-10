@@ -60,7 +60,7 @@ type CatalogResp = {
   ok: true;
   catalog: {
     business: { name: string; description?: string | null; logoUrl?: string | null; city?: string | null };
-    payment: { storefrontCheckoutEnabled: boolean; manualTransferEnabled: boolean; methods: { id: string; label: string }[] };
+    payment: { storefrontCheckoutEnabled: boolean; manualTransferEnabled: boolean; qrisEnabled?: boolean; methods: { id: string; label: string }[] };
     categories: Category[]; products: Product[];
   };
   context: { mode: "direct" };
@@ -378,7 +378,7 @@ export function StorefrontMenu() {
       const res = await postJson<any>("/api/public/storefront/checkout", {
         idempotencyKey: idemKey(),
         items: cart.map((l) => ({ productId: l.productId, quantity: l.quantity, notes: l.notes || undefined })),
-        paymentMethod: "manual_transfer",
+        paymentMethod: "qris",
         orderType: "takeaway",
         notes: notes || undefined,
         guestName: name.trim(),
@@ -625,7 +625,7 @@ export function StorefrontMenu() {
           )}
         </ResponsivePanel>
 
-        <ResponsivePanel open={checkoutOpen} onOpenChange={setCheckoutOpen} title="Checkout" description="Lengkapi data pemesan. Transfer manual, diverifikasi server.">
+        <ResponsivePanel open={checkoutOpen} onOpenChange={setCheckoutOpen} title="Checkout" description="Lengkapi data pemesan. Bayar via QRIS, bukti diverifikasi kasir.">
           <form onSubmit={submitCheckout} className="space-y-4">
             <div className="rounded-2xl border border-border/70 bg-muted/15 p-4">
               <p className="text-sm font-medium">Ringkasan</p>
@@ -649,7 +649,7 @@ export function StorefrontMenu() {
               <div className="space-y-1.5"><label className="text-sm font-medium" htmlFor="co-notes">Catatan pesanan <span className="font-normal text-muted-foreground">(opsional)</span></label><Textarea id="co-notes" value={notes} onChange={(e) => setNotes(e.target.value)} className="min-h-24 rounded-2xl border-border/70 bg-muted/10 shadow-none" maxLength={500} placeholder="Contoh: tanpa sambal, ambil pukul 12.00" /></div>
             </div>
             <Button type="submit" className="h-11 w-full rounded-2xl shadow-none" disabled={submitting || !canCheckout || !cart.length}>
-              {submitting ? <><Loader2Icon aria-hidden="true" className="size-4 animate-spin" />Memproses...</> : "Buat pesanan & lanjut bayar"}
+              {submitting ? <><Loader2Icon aria-hidden="true" className="size-4 animate-spin" />Memproses...</> : "Buat pesanan & bayar QRIS"}
             </Button>
           </form>
         </ResponsivePanel>

@@ -8,6 +8,7 @@ import { updateOrderStatus, verifyOrder } from "@/server/storefront/service";
 const PatchSchema = z.object({
   action: z.enum(["verify", "reject", "set-status"]),
   status: z.string().optional(),
+  reason: z.string().max(300).optional(),
 });
 
 export async function PATCH(
@@ -36,7 +37,14 @@ export async function PATCH(
     if (parsed.data.action === "verify") {
       order = await verifyOrder(id, true);
     } else if (parsed.data.action === "reject") {
-      order = await verifyOrder(id, false);
+      const reason = String(parsed.data.reason || "").trim();
+      if (reason.length < 3) {
+        return NextResponse.json(
+          { error: "Alasan penolakan wajib diisi (minimal 3 karakter)." },
+          { status: 400 },
+        );
+      }
+      order = await verifyOrder(id, false, reason);
     } else {
       const status = String(parsed.data.status || "").trim();
       if (!["pending", "confirmed", "preparing", "ready", "completed", "cancelled"].includes(status)) {

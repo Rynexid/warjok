@@ -1,0 +1,1 @@
+ALTER TABLE "lookups"."StorefrontOrders" ADD COLUMN "RejectionReason" text;

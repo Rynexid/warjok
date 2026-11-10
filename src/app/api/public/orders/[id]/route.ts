@@ -49,10 +49,11 @@ export async function GET(
         payment: {
           id: order.id,
           status: payState,
-          method: order.paymentMethod || "manual_transfer",
+          method: order.paymentMethod || "qris",
           instructions: order.paymentInstructions || null,
           proofSubmitted: !!order.proofSubmitted,
           proofUrl: order.proofUrl || null,
+          rejectionReason: order.rejectionReason || null,
         },
         createdAt: order.createdAt,
         updatedAt: order.updatedAt,

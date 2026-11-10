@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
+  AlertTriangleIcon,
   BadgeCheckIcon,
   BanIcon,
   CheckCircle2Icon,
@@ -35,6 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { getJson } from "@/features/storefront/api";
 import { formatCurrency, formatDateTime, formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -67,6 +69,7 @@ type OnlineOrder = {
   proofSubmitted?: boolean;
   proofUrl?: string | null;
   paymentMethod?: string | null;
+  rejectionReason?: string | null;
   createdAt: string | Date;
   updatedAt: string | Date;
 };
@@ -105,6 +108,8 @@ export function OnlineOrdersPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selected, setSelected] = useState<OnlineOrder | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
 
   async function load(silent = false) {
     if (!silent) setLoading(true);
@@ -124,7 +129,11 @@ export function OnlineOrdersPage() {
   }, []);
 
   useEffect(() => {
-    if (!selected) return;
+    if (!selected) {
+      setRejectingId(null);
+      setRejectReason("");
+      return;
+    }
     const next = orders.find((o) => o.id === selected.id);
     if (next) setSelected(next);
   }, [orders, selected?.id]);
@@ -158,11 +167,27 @@ export function OnlineOrdersPage() {
       if (!res.ok) throw new Error((data as any)?.error || "Gagal memperbarui.");
       const updated = (data as any).order as OnlineOrder;
       setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, ...updated } : o)));
+      setSelected((prev) => (prev?.id === id ? { ...prev, ...updated } : prev));
       toast.success(okMsg);
+      return true;
     } catch (e: any) {
       toast.error(e?.message || "Gagal memperbarui pesanan.");
+      return false;
     } finally {
       setBusy(null);
+    }
+  }
+
+  async function confirmReject(id: string) {
+    const reason = rejectReason.trim();
+    if (reason.length < 3) {
+      toast.error("Alasan penolakan wajib diisi (minimal 3 karakter).");
+      return;
+    }
+    const ok = await mutate(id, { action: "reject", reason }, "Pembayaran ditolak");
+    if (ok) {
+      setRejectingId(null);
+      setRejectReason("");
     }
   }
 
@@ -277,7 +302,11 @@ export function OnlineOrdersPage() {
                             variant="destructive"
                             className="rounded-xl"
                             disabled={busy === order.id}
-                            onClick={() => mutate(order.id, { action: "reject" }, "Pembayaran ditolak")}
+                            onClick={() => {
+                              setSelected(order);
+                              setRejectingId(order.id);
+                              setRejectReason("");
+                            }}
                           >
                             <BanIcon className="size-4" /> Tolak
                           </Button>
@@ -338,25 +367,52 @@ export function OnlineOrdersPage() {
               <Card className="rounded-2xl border-border/70 p-4 space-y-3">
                 <p className="text-sm font-medium">Pembayaran & verifikasi</p>
                 <p className="text-sm text-muted-foreground">
-                  Metode: {selected.paymentMethod || "manual"} · Status: {payLabel(selected.paymentStatus)}
+                  Metode: {String(selected.paymentMethod || "qris").toUpperCase()} · Status: {payLabel(selected.paymentStatus)}
                 </p>
                 {selected.proofUrl ? (
                   <a href={selected.proofUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary underline underline-offset-4">
-                    <EyeIcon className="size-4" /> Lihat bukti transfer
+                    <EyeIcon className="size-4" /> Lihat bukti pembayaran
                   </a>
                 ) : (
-                  <p className="text-sm text-muted-foreground">Belum ada bukti transfer.</p>
+                  <p className="text-sm text-muted-foreground">Belum ada bukti pembayaran.</p>
                 )}
-                <div className="flex flex-wrap gap-2">
+                {norm(selected.paymentStatus) === "rejected" && selected.rejectionReason ? (
+                  <div className="flex items-start gap-2 rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                    <AlertTriangleIcon className="mt-0.5 size-4 shrink-0" />
+                    <p><span className="font-medium">Alasan penolakan:</span> {selected.rejectionReason}</p>
+                  </div>
+                ) : null}
+                <div className="space-y-2">
                   {isAwaiting(selected) ? (
-                    <>
-                      <Button size="sm" className="rounded-xl" disabled={busy === selected.id} onClick={() => mutate(selected.id, { action: "verify" }, "Pembayaran diverifikasi")}>
-                        <CheckCircle2Icon className="size-4" /> Verifikasi pembayaran
-                      </Button>
-                      <Button size="sm" variant="destructive" className="rounded-xl" disabled={busy === selected.id} onClick={() => mutate(selected.id, { action: "reject" }, "Pembayaran ditolak")}>
-                        <XCircleIcon className="size-4" /> Tolak
-                      </Button>
-                    </>
+                    rejectingId === selected.id ? (
+                      <div className="space-y-2 rounded-xl border border-destructive/30 bg-destructive/5 p-3">
+                        <p className="text-sm font-medium text-destructive">Tolak pembayaran</p>
+                        <Textarea
+                          value={rejectReason}
+                          onChange={(e) => setRejectReason(e.target.value)}
+                          placeholder="Tulis alasan penolakan untuk pelanggan (wajib, min. 3 karakter)..."
+                          className="min-h-24 rounded-xl bg-background"
+                          maxLength={300}
+                        />
+                        <div className="flex flex-wrap gap-2">
+                          <Button size="sm" variant="outline" className="rounded-xl" disabled={busy === selected.id} onClick={() => { setRejectingId(null); setRejectReason(""); }}>
+                            Batal
+                          </Button>
+                          <Button size="sm" variant="destructive" className="rounded-xl" disabled={busy === selected.id || rejectReason.trim().length < 3} onClick={() => confirmReject(selected.id)}>
+                            <XCircleIcon className="size-4" /> Konfirmasi tolak
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" className="rounded-xl" disabled={busy === selected.id} onClick={() => mutate(selected.id, { action: "verify" }, "Pembayaran diverifikasi")}>
+                          <CheckCircle2Icon className="size-4" /> Verifikasi pembayaran
+                        </Button>
+                        <Button size="sm" variant="destructive" className="rounded-xl" disabled={busy === selected.id} onClick={() => { setRejectingId(selected.id); setRejectReason(""); }}>
+                          <BanIcon className="size-4" /> Tolak
+                        </Button>
+                      </div>
+                    )
                   ) : (
                     <p className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                       <Clock3Icon className="size-4" /> Verifikasi tersedia saat status menunggu verifikasi.

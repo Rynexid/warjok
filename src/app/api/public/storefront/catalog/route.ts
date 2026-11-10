@@ -41,11 +41,7 @@ export async function GET() {
         .where(eq(products.businessId, DEFAULT_BUSINESS_ID)),
     ]);
 
-    const paymentMethods = [
-      { id: "cash", label: "Tunai" },
-      { id: "qris", label: "QRIS" },
-      { id: "card", label: "Kartu" },
-    ];
+    const paymentMethods = [{ id: "qris", label: "QRIS" }];
 
     return NextResponse.json({
       ok: true,
@@ -58,7 +54,8 @@ export async function GET() {
         },
         payment: {
           storefrontCheckoutEnabled: true,
-          manualTransferEnabled: true,
+          manualTransferEnabled: false,
+          qrisEnabled: true,
           methods: paymentMethods,
         },
         categories: categoryRows.map((c) => ({

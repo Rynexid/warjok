@@ -48,6 +48,7 @@ export const storefrontOrders = s.table(
     paymentInstructions: jsonb("PaymentInstructions"),
     proofSubmitted: boolean("ProofSubmitted").notNull().default(false),
     proofUrl: text("ProofUrl"),
+    rejectionReason: text("RejectionReason"),
     paidAt: timestamp("PaidAt", { withTimezone: true }),
     createdAt: timestamp("CreatedAt", { withTimezone: true })
       .defaultNow()
