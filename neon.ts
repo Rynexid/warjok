@@ -1,7 +1,9 @@
 import { defineConfig } from "@neon/config/v1";
 
 export default defineConfig({
-  // Declare your Neon services here
+  // Neon services for Warjok POS (tiny-leaf-63468583 / production).
+  // Postgres is always present; Auth declared here. Realtime enabled via
+  // `neon realtime enable` (CLI); Functions can be added under `functions`.
   auth: true,
   // Branch policy: per-branch tuning
   branch: (branch) => {

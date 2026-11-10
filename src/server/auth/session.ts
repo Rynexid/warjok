@@ -157,6 +157,4 @@ export const ACTION_ROLES: Record<string, UserRole> = {
   "transaction.void": "manager",
   // Pengaturan
   "settings.update": "admin",
-  // Demo/Presentasi
-  "demo.seed": "owner",
 };

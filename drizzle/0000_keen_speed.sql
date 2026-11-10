@@ -4,8 +4,6 @@ CREATE SCHEMA "core";
 --> statement-breakpoint
 CREATE SCHEMA "customers";
 --> statement-breakpoint
-CREATE SCHEMA "demo";
---> statement-breakpoint
 CREATE SCHEMA "inventory";
 --> statement-breakpoint
 CREATE SCHEMA "lookups";
@@ -837,7 +835,7 @@ CREATE INDEX "Inventory_ProductId_idx" ON "inventory"."Inventory" USING btree ("
 CREATE INDEX "StockAdjustments_BusinessId_idx" ON "inventory"."StockAdjustments" USING btree ("BusinessId");--> statement-breakpoint
 CREATE INDEX "StockAdjustments_StoreId_idx" ON "inventory"."StockAdjustments" USING btree ("StoreId");--> statement-breakpoint
 CREATE INDEX "StockAdjustments_ProductId_idx" ON "inventory"."StockAdjustments" USING btree ("ProductId");--> statement-breakpoint
-CREATE INDEX "StockAdjustments_CreatedAt_idx" ON "inventory"."StockAdjustments" USING btree ("CreatedAt");--> statement-breakpoint
+CREATE INDEX d "StockAdjustments_CreatedAt_idx" ON "inventory"."StockAdjustments" USING btree ("CreatedAt");--> statement-breakpoint
 CREATE INDEX "StockMovements_BusinessId_idx" ON "inventory"."StockMovements" USING btree ("BusinessId");--> statement-breakpoint
 CREATE INDEX "StockMovements_StoreId_idx" ON "inventory"."StockMovements" USING btree ("StoreId");--> statement-breakpoint
 CREATE INDEX "StockMovements_ProductId_idx" ON "inventory"."StockMovements" USING btree ("ProductId");--> statement-breakpoint

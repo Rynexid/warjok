@@ -50,7 +50,7 @@ const FEATURES = [
 ] as const
 
 /**
- * Real sign-in screen powered by Neon Auth. Replaces the demo login flow.
+ * Real sign-in screen powered by Neon Auth.
  */
 export function LoginPage() {
   const router = useRouter()

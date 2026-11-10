@@ -56,7 +56,7 @@ bun test         # bun test
 bun db:generate  # drizzle-kit generate
 bun db:migrate   # drizzle-kit migrate
 bun db:push      # drizzle-kit push
-bun db:seed      # seed business/demo data
+bun db:seed      # seed business data
 bun db:studio    # drizzle-kit studio
 ```
 

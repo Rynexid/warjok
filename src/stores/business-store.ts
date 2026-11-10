@@ -114,8 +114,7 @@ const nextTransactionNumber = (transactions: Transaction[]) => {
 }
 
 /**
- * Sync a local mutation to the server via /api/business. Real-mode only — there
- * is no demo fallback.
+ * Sync a local mutation to the server via /api/business.
  */
 async function sync(action: string, payload: unknown) {
   if (typeof window === 'undefined') return
@@ -160,8 +159,7 @@ export const useBusinessStore = create<BusinessState>()((set, get) => ({
 
   hydrate: async () => {
     // Real data is fetched once by BusinessDataProvider via TanStack Query and
-    // written into this store. This store no longer performs its own database
-    // fetch so there is a single data source for real sessions.
+    // written into this store.
     return
   },
 

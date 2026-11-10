@@ -1,7 +1,7 @@
 /**
  * Business domain types shared by the catalog, inventory, sales and reporting
- * modules. These mirror the shape the Hono/Drizzle API is expected to return so
- * the demo store can be swapped for `fetch` calls without touching the UI.
+ * modules. These mirror the shape the API is expected to return so the UI can
+ * work against the live database.
  */
 
 export type EntityStatus = 'active' | 'archived'
