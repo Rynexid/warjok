@@ -1,5 +1,9 @@
-import { ProfilePage } from "@/features/settings/profile-page";
+import { ProfilePage } from "@/features/settings/profile-page"
 
 export default function Page() {
-  return <ProfilePage />;
+  return (
+    <main className="min-h-svh bg-muted/20">
+      <ProfilePage />
+    </main>
+  )
 }

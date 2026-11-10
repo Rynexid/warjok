@@ -11,3 +11,4 @@ export * from "./transactions";
 export * from "./payments";
 export * from "./settings";
 export * from "./audit";
+export * from "./storefront";

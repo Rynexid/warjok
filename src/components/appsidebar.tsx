@@ -60,6 +60,7 @@ const NAV: NavGroup[] = [
     items: [
       { href: "/pos", label: "POS Terminal", icon: ShoppingBag },
       { href: "/transactions", label: "Transactions", icon: Receipt },
+      { href: "/order", label: "Order Online", icon: ShoppingBag },
       { href: "/customers", label: "Customers", icon: Users },
     ],
   },
@@ -121,7 +122,7 @@ export function AppSidebar({
   const pathname = usePathname()
   const realUser = useRealUser(true)
   const userRole = realUser?.role
-  const isRegularUser = userRole === "user" || userRole === undefined
+  const isRegularUser = userRole === "user"
   const currentUser = {
     name: realUser?.name ?? "Akun terdaftar",
     email: realUser?.email ?? "",
@@ -135,9 +136,7 @@ export function AppSidebar({
   })
 
   // Filter nav items based on role
-  const filteredNav = isRegularUser 
-    ? [] 
-    : NAV
+  const filteredNav = isRegularUser ? [] : NAV
 
   // Tutup sidebar otomatis di mobile setiap kali berpindah halaman.
   useEffect(() => {
@@ -359,13 +358,34 @@ export function AppSidebar({
           )}
         >
           {isRegularUser ? (
-            <div className="space-y-1 px-1 text-sm text-muted-foreground">
-              <Link href="/profile" className="block rounded-lg px-2 py-2 hover:bg-accent hover:text-foreground">Profil</Link>
-            </div>
-          ) : Array.isArray(navContent) && navContent.length > 0 ? navContent : (
-            <div className="space-y-1 px-1 text-sm text-muted-foreground">
-              <Link href="/profile" className="block rounded-lg px-2 py-2 hover:bg-accent hover:text-foreground">Profil</Link>
-            </div>
+            collapsed ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="/profile"
+                    aria-label="Profil"
+                    aria-current={isActive("/profile") ? "page" : undefined}
+                    className={cn(
+                      "flex size-10 items-center justify-center rounded-lg transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      isActive("/profile")
+                        ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
+                        : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    )}
+                  >
+                    <Users className="size-5 shrink-0" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" sideOffset={8}>
+                  Profil
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <div className="space-y-1 px-1 text-sm text-muted-foreground">
+                <Link href="/profile" className="block rounded-lg px-2 py-2 hover:bg-accent hover:text-foreground">Profil</Link>
+              </div>
+            )
+          ) : (
+            navContent
           )}
         </nav>
 

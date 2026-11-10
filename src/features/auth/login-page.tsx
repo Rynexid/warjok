@@ -11,7 +11,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
@@ -54,14 +53,9 @@ const FEATURES = [
  */
 export function LoginPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [showPassword, setShowPassword] = useState(false)
 
-  const from = searchParams.get('from')
-  const redirectTo =
-    from && from.startsWith('/') && from !== '/login'
-      ? from
-      : '/dashboard'
+  const redirectTo = '/menu'
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
