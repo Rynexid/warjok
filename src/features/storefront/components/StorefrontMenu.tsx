@@ -79,9 +79,19 @@ function cartKey(p: Product, variantId?: string | null, notes?: string) {
   return `${p.id}:${variantId || ""}:${(notes || "").trim().toLowerCase()}`;
 }
 function idemKey() {
-  let v = sessionStorage.getItem(IDEM_KEY);
-  if (!v) { v = crypto.randomUUID(); sessionStorage.setItem(IDEM_KEY, v); }
-  return v;
+  try {
+    let v = sessionStorage.getItem(IDEM_KEY);
+    if (!v) {
+      v =
+        typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      sessionStorage.setItem(IDEM_KEY, v);
+    }
+    return v;
+  } catch {
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  }
 }
 function unitPrice(p: Product, variantId?: string | null) {
   return Number(p.variants.find((v) => v.id === variantId)?.sellingPrice ?? p.sellingPrice);
@@ -282,8 +292,9 @@ export function StorefrontMenu() {
   }, []);
   useEffect(() => { try { sessionStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch {} }, [cart]);
   useEffect(() => {
-    if (!data?.catalog.products?.length || !cart.length) return;
-    const byId = new Map(data.catalog.products.map((p) => [p.id, p]));
+    const catalogProducts = data?.catalog?.products ?? [];
+    if (!catalogProducts.length || !cart.length) return;
+    const byId = new Map(catalogProducts.map((p) => [p.id, p]));
     setCart((prev) => {
       let changed = false;
       const totals = new Map<string, number>();
@@ -306,16 +317,17 @@ export function StorefrontMenu() {
     if (user && !name) setName(user.name || "");
   }, [user, name]);
 
-  const categories = data?.catalog.categories || [];
+  const categories = data?.catalog?.categories ?? [];
+  const products = data?.catalog?.products ?? [];
   const categoryName = (id?: string | null) => categories.find((c) => c.id === id)?.name || "Menu";
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return (data?.catalog.products || []).filter((p) =>
+    return products.filter((p) =>
       (categoryId === "all" || p.categoryId === categoryId) &&
       (!showAvailableOnly || p.available) &&
       (!q || p.name.toLowerCase().includes(q) || (p.description || "").toLowerCase().includes(q)),
     );
-  }, [data, search, categoryId, showAvailableOnly]);
+  }, [products, search, categoryId, showAvailableOnly]);
 
   function openDetail(p: Product) {
     if (!p.available) { toast.error("Produk sedang tidak tersedia"); return; }
@@ -364,8 +376,8 @@ export function StorefrontMenu() {
     prevCount.current = count;
   }, [count]);
 
-  const canCheckout = !!data?.catalog.payment.storefrontCheckoutEnabled;
-  const biz = data?.catalog.business;
+  const canCheckout = !!data?.catalog?.payment?.storefrontCheckoutEnabled;
+  const biz = data?.catalog?.business ?? null;
   const resetFilters = () => { setSearch(""); setCategoryId("all"); setShowAvailableOnly(false); };
 
   async function submitCheckout(e: React.FormEvent) {
