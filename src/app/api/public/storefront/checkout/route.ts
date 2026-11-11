@@ -165,7 +165,7 @@ const orderItems: {
       if (inventoryRow) {
         await db
           .update(inventory)
-          .set({ stockQuantity: sql`${inventoryRow.stockQuantity} - ${item.quantity}` })
+          .set({ stockQuantity: sql`${inventory.stockQuantity} - ${item.quantity}` })
           .where(
             and(
               eq(inventory.id, inventoryRow.id),
