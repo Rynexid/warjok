@@ -405,7 +405,7 @@ export function OnlineOrdersPage() {
                       onClick={() =>
                         downloadDataUrl(
                           selected.proofUrl!,
-                          `bukti-pembesan-${selected.orderNumber}.jpg`,
+                          `bukti-pembelian-${selected.orderNumber}.jpg`,
                         )}
                       >
                       <DownloadIcon className="size-4" /> Unduh bukti
