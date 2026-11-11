@@ -81,14 +81,20 @@ export async function POST(request: Request) {
       .limit(1);
     const taxRate = Number(defaultTaxRate?.rate ?? 0);
 
-    const orderItems: {
-      productId: string;
-      name: string;
-      sku: string;
-      quantity: number;
-      unitPrice: number;
-      lineTotal: number;
-    }[] = [];
+const orderItems: {
+  productId: string;
+  name: string;
+  sku: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+  unit?: string | null;
+  lengthCm?: number | null;
+  widthCm?: number | null;
+  heightCm?: number | null;
+  diameterCm?: number | null;
+  dimensionUnit?: string | null;
+}[] = [];
     let subtotal = 0;
 
     for (const item of canonicalItems) {
@@ -114,6 +120,12 @@ export async function POST(request: Request) {
         quantity: item.quantity,
         unitPrice,
         lineTotal,
+        unit: product.unit,
+        lengthCm: product.lengthCm != null ? Number(product.lengthCm) : null,
+        widthCm: product.widthCm != null ? Number(product.widthCm) : null,
+        heightCm: product.heightCm != null ? Number(product.heightCm) : null,
+        diameterCm: product.diameterCm != null ? Number(product.diameterCm) : null,
+        dimensionUnit: product.dimensionUnit ?? "cm",
       });
     }
 
@@ -146,6 +158,32 @@ export async function POST(request: Request) {
       grandTotal: total,
       paymentInstructions,
     });
+
+    // Kurangi stok inventory untuk setiap item pesanan.
+    for (const item of canonicalItems) {
+      const inventoryRow = inventoryByProduct.get(item.productId);
+      if (inventoryRow) {
+        await db
+          .update(inventory)
+          .set({ stockQuantity: sql`${inventoryRow.stockQuantity} - ${item.quantity}` })
+          .where(
+            and(
+              eq(inventory.id, inventoryRow.id),
+              sql`${inventory.stockQuantity} >= ${item.quantity}`,
+            ),
+          );
+      } else {
+        await db
+          .update(products)
+          .set({ stockQuantity: sql`${products.stockQuantity} - ${item.quantity}` })
+          .where(
+            and(
+              eq(products.id, item.productId),
+              sql`${products.stockQuantity} >= ${item.quantity}`,
+            ),
+          );
+      }
+    }
 
     return NextResponse.json({
       ok: true,

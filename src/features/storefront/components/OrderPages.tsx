@@ -295,12 +295,20 @@ export function StorefrontTrackingPage({ orderId }: { orderId: string }) {
         <Card className="rounded-2xl p-4">
           <p className="text-sm font-medium">Ringkasan</p>
           <div className="mt-2 space-y-2">
-            {(order.items || []).map((i: any, idx: number) => (
-              <div key={idx} className="flex items-start justify-between gap-3 text-sm">
-                <span className="min-w-0 flex-1"><span className="font-medium tabular-nums">{i.quantity}×</span> {i.productName}{i.variantName ? ` · ${i.variantName}` : ""}</span>
-                <span className="shrink-0 tabular-nums">{rp(i.subtotal)}</span>
-              </div>
-            ))}
+            {(order.items || []).map((i: any, idx: number) => {
+              const dims = [];
+              if (i.diameterCm != null) dims.push(`⌀${Number(i.diameterCm).toFixed(0)} ${i.dimensionUnit || "cm"}`);
+              if (i.lengthCm != null) dims.push(`P${Number(i.lengthCm).toFixed(0)}`);
+              if (i.widthCm != null) dims.push(`L${Number(i.widthCm).toFixed(0)}`);
+              if (i.heightCm != null) dims.push(`T${Number(i.heightCm).toFixed(0)}`);
+              const dimText = dims.length ? ` (${dims.join(" × ")})` : "";
+              return (
+                <div key={idx} className="flex items-start justify-between gap-3 text-sm">
+                  <span className="min-w-0 flex-1"><span className="font-medium tabular-nums">{i.quantity}×</span> {i.productName}{i.variantName ? ` · ${i.variantName}` : ""}{dimText}</span>
+                  <span className="shrink-0 tabular-nums">{rp(i.subtotal)}</span>
+                </div>
+              );
+            })}
           </div>
           <div className="mt-3 space-y-1 border-t pt-3 text-sm">
             <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span className="tabular-nums">{rp(order.totals?.subtotal || 0)}</span></div>

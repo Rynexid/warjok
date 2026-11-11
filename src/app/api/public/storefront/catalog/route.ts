@@ -94,6 +94,12 @@ export async function GET() {
               ? Number(p.stockQuantity) > 0
               : p.status === "active",
           maxQuantity: p.isStockTracked ? Number(p.stockQuantity) : 99,
+          unit: p.unit,
+          lengthCm: p.lengthCm != null ? Number(p.lengthCm) : null,
+          widthCm: p.widthCm != null ? Number(p.widthCm) : null,
+          heightCm: p.heightCm != null ? Number(p.heightCm) : null,
+          diameterCm: p.diameterCm != null ? Number(p.diameterCm) : null,
+          dimensionUnit: p.dimensionUnit ?? "cm",
           variants: [],
         })),
       },

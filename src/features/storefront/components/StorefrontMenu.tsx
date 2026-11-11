@@ -50,6 +50,8 @@ type Variant = { id: string; name: string; sellingPrice: number | null };
 type Product = {
   id: string; name: string; description?: string | null; categoryId?: string | null;
   sellingPrice: number; imageUrl?: string | null; isTaxable: boolean; available: boolean; maxQuantity?: number | null; variants: Variant[];
+  unit?: string | null;
+  lengthCm?: number | null; widthCm?: number | null; heightCm?: number | null; diameterCm?: number | null; dimensionUnit?: string | null;
 };
 type Category = { id: string; name: string; sortOrder: number };
 type CartLine = {
@@ -101,6 +103,16 @@ function qtyForProduct(cart: CartLine[], productId: string) {
 }
 function maxForProduct(p: Product) {
   return typeof p.maxQuantity === "number" ? Math.max(0, Math.floor(p.maxQuantity)) : MAX_QTY;
+}
+
+function formatDimension(p: Product) {
+  const u = p.dimensionUnit || "cm";
+  const parts: string[] = [];
+  if (p.diameterCm != null) parts.push(`⌀${Number(p.diameterCm).toFixed(0)}${u}`);
+  if (p.lengthCm != null) parts.push(`P ${Number(p.lengthCm).toFixed(0)}${u}`);
+  if (p.widthCm != null) parts.push(`L ${Number(p.widthCm).toFixed(0)}${u}`);
+  if (p.heightCm != null) parts.push(`T ${Number(p.heightCm).toFixed(0)}${u}`);
+  return parts.length ? parts.join(" × ") : null;
 }
 
 function ProductVisual({ p, className }: { p: Product; className?: string }) {
@@ -204,6 +216,11 @@ function StorefrontProductCard({
             <p className="truncate text-[11px] text-muted-foreground">
               {hasChoices ? `${product.variants.length} pilihan` : typeof product.maxQuantity === "number" ? `Sisa ${formatNumber(product.maxQuantity)}` : product.available ? "Siap dipesan" : ""}
             </p>
+            {formatDimension(product) && (
+              <p className="truncate text-[10px] text-muted-foreground/80">
+                {formatDimension(product)}
+              </p>
+            )}
           </div>
           <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
             {!product.available ? (
@@ -562,6 +579,9 @@ export function StorefrontMenu() {
               <div>
                 <p className="text-xl font-semibold tracking-tight tabular-nums">{formatCurrency(detailPrice)}</p>
                 {detail.description ? <p className="mt-2 text-sm leading-6 text-muted-foreground">{detail.description}</p> : null}
+                {formatDimension(detail) && (
+                  <p className="mt-2 text-[12px] text-muted-foreground">Dimensi: {formatDimension(detail)}</p>
+                )}
               </div>
               {detail.variants?.length ? (
                 <fieldset className="space-y-2">

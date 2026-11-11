@@ -83,6 +83,12 @@ export const products = s.table(
     isTaxable: boolean("IsTaxable").notNull().default(true),
     isStockTracked: boolean("IsStockTracked").notNull().default(true),
     status: text("Status").notNull().default("active"),
+    /** Dimensi produk (cm) untuk ditampilkan saat pemesan memesan. */
+    lengthCm: numeric("LengthCm", { precision: 10, scale: 2 }),
+    widthCm: numeric("WidthCm", { precision: 10, scale: 2 }),
+    heightCm: numeric("HeightCm", { precision: 10, scale: 2 }),
+    diameterCm: numeric("DiameterCm", { precision: 10, scale: 2 }),
+    dimensionUnit: text("DimensionUnit").notNull().default("cm"),
     createdAt: timestamp("CreatedAt", { withTimezone: true })
       .defaultNow()
       .notNull(),

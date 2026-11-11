@@ -1,6 +1,8 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, lte, sql } from "drizzle-orm";
 import { db } from "@/server/db";
 import { storefrontOrders } from "@/server/db/schema";
+import { inventory } from "@/server/db/schema/inventory";
+import { products } from "@/server/db/schema/products";
 
 export type StorefrontOrderItem = {
   productId: string;
@@ -12,6 +14,12 @@ export type StorefrontOrderItem = {
   variantId?: string | null;
   variantName?: string | null;
   notes?: string | null;
+  unit?: string | null;
+  lengthCm?: number | null;
+  widthCm?: number | null;
+  heightCm?: number | null;
+  diameterCm?: number | null;
+  dimensionUnit?: string | null;
 };
 
 export type StorefrontOrder = {
@@ -107,7 +115,53 @@ export async function getStorefrontOrderByNumber(orderNumber: string) {
   return row ? mapOrder(row) : null;
 }
 
+/** Pesanan pending yang melebihi batas waktu ini (menit) akan dibatalkan otomatis dan stok dikembalikan. */
+const AUTO_CANCEL_PENDING_MINUTES = 60;
+
 export async function listStorefrontOrders() {
+  // Batalkan pesanan pending yang melewati batas waktu tanpa bukti pembayaran,
+  // lalu kembalikan stoknya agar tidak menumpuk di tampilan kasir.
+  const cutoff = new Date(Date.now() - AUTO_CANCEL_PENDING_MINUTES * 60 * 1000);
+  const expired = await db
+    .select({ id: storefrontOrders.id, status: storefrontOrders.status, items: storefrontOrders.items })
+    .from(storefrontOrders)
+    .where(
+      lte(storefrontOrders.createdAt, cutoff),
+    );
+
+  for (const o of expired) {
+    const items = (o.items as any[]) ?? [];
+    for (const it of items) {
+      const product = await db
+        .select()
+        .from(products)
+        .where(eq(products.id, it.productId))
+        .limit(1);
+      const prod = product[0];
+      if (!prod) continue;
+      const invRow = await db
+        .select()
+        .from(inventory)
+        .where(eq(inventory.productId, it.productId))
+        .limit(1);
+      if (invRow[0]) {
+        await db
+          .update(inventory)
+          .set({ stockQuantity: sql`${inventory.stockQuantity} + ${it.quantity}` })
+          .where(eq(inventory.id, invRow[0].id));
+      } else {
+        await db
+          .update(products)
+          .set({ stockQuantity: sql`${products.stockQuantity} + ${it.quantity}` })
+          .where(eq(products.id, it.productId));
+      }
+    }
+    await db
+      .update(storefrontOrders)
+      .set({ status: "cancelled", paymentStatus: "rejected", updatedAt: new Date() })
+      .where(eq(storefrontOrders.id, o.id));
+  }
+
   const rows = await db
     .select()
     .from(storefrontOrders)

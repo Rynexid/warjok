@@ -55,3 +55,12 @@ n ter-suspend). Perlu `CREATE SCHEMA IF NOT EXISTS audit` dan `staff` sebelum mi
 - `src/components/appsidebar.tsx`: menampilkan badge `destructive` (dengan `animate-pulse`) pada item nav "Order Online" (`/order`) saat ada pesanan menunggu verifikasi.
 - Perbaiki build blocker pre-existing: tambah `"use client"` pada `src/app/(dashboard)/login-activity/page.tsx` dan `export const dynamic = "force-dynamic"` pada `src/app/(auth)/reset-password/page.tsx`.
 
+### 📏 Dimensi Produk & Pengurangan Stok (`/menu`)
+- Skema `products."Products"`: tambah kolom `LengthCm`, `WidthCm`, `HeightCm`, `DiameterCm`, `DimensionUnit` (default `cm`) untuk mencatat dimensi produk.
+- Migrasi baru: `drizzle/0006_dimension_columns.sql` (menambahkan kolom dimensi ke tabel `products."Products"`).
+- API `GET /api/public/storefront/catalog`: memetakan kolom dimensi ke response produk (`unit`, `lengthCm`, `widthCm`, `heightCm`, `diameterCm`, `dimensionUnit`).
+- `StorefrontMenu`: tipe `Product` ditambahkan field dimensi; tampilkan dimensi pada kartu produk, detail produk, dan ringkasan checkout.
+- `OrderPages` (halaman pelacak pesanan pelanggan): tampilkan dimensi pada setiap item pesanan dalam ringkasan.
+- API `POST /api/public/storefront/checkout`: menyimpan data dimensi pada setiap item pesanan dan mengurangi stok inventory (atau `stockQuantity` produk) saat pesanan dibuat.
+- `listStorefrontOrders`: otomatis membatalkan pesanan `pending` yang melebihi 60 menit tanpa bukti pembayaran dan mengembalikan stoknya, sehingga tampilan kasir tidak menampilkan pesanan yang batal.
+
