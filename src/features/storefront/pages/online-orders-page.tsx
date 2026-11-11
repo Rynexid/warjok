@@ -7,6 +7,7 @@ import {
   BanIcon,
   CheckCircle2Icon,
   Clock3Icon,
+  DownloadIcon,
   EyeIcon,
   RefreshCwIcon,
   ShoppingBagIcon,
@@ -85,6 +86,19 @@ const ORDER_STATUS_OPTIONS = [
 
 function norm(v: unknown) {
   return String(v || "").trim().toLowerCase();
+}
+
+function downloadDataUrl(url: string, filename: string) {
+  try {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } catch {
+    /* ignore */
+  }
 }
 
 function payLabel(v: string) {
@@ -375,9 +389,28 @@ export function OnlineOrdersPage() {
                   Metode: {String(selected.paymentMethod || "qris").toUpperCase()} · Status: {payLabel(selected.paymentStatus)}
                 </p>
                 {selected.proofUrl ? (
-                  <a href={selected.proofUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary underline underline-offset-4">
-                    <EyeIcon className="size-4" /> Lihat bukti pembayaran
-                  </a>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <a
+                      href={selected.proofUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl border border-border/70 px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted"
+                    >
+                      <EyeIcon className="size-4" /> Lihat bukti pembayaran
+                    </a>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-xl"
+                      onClick={() =>
+                        downloadDataUrl(
+                          selected.proofUrl!,
+                          `bukti-pembesan-${selected.orderNumber}.jpg`,
+                        )}
+                      >
+                      <DownloadIcon className="size-4" /> Unduh bukti
+                    </Button>
+                  </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">Belum ada bukti pembayaran.</p>
                 )}
