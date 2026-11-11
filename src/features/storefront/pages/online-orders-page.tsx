@@ -388,7 +388,7 @@ export function OnlineOrdersPage() {
                 <p className="text-sm text-muted-foreground">
                   Metode: {String(selected.paymentMethod || "qris").toUpperCase()} · Status: {payLabel(selected.paymentStatus)}
                 </p>
-                {selected.proofUrl ? (
+{selected.proofUrl ? (
                   <div className="flex flex-wrap items-center gap-2">
                     <a
                       href={selected.proofUrl}
@@ -399,16 +399,17 @@ export function OnlineOrdersPage() {
                       <EyeIcon className="size-4" /> Lihat bukti pembayaran
                     </a>
                     <Button
-                      size="sm"
+                      size="icon-sm"
                       variant="outline"
                       className="rounded-xl"
+                      aria-label="Unduh bukti pembayaran"
                       onClick={() =>
                         downloadDataUrl(
                           selected.proofUrl!,
                           `bukti-pembelian-${selected.orderNumber}.jpg`,
                         )}
-                      >
-                      <DownloadIcon className="size-4" /> Unduh bukti
+                    >
+                      <DownloadIcon className="size-4" />
                     </Button>
                   </div>
                 ) : (
