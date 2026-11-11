@@ -129,6 +129,11 @@ export function OnlineOrdersPage() {
   }, []);
 
   useEffect(() => {
+    const timer = setInterval(() => void load(true), 30000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
     if (!selected) {
       setRejectingId(null);
       setRejectReason("");

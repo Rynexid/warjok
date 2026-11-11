@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!role) return
-    if (role === "user" && pathname !== "/profile") {
+    if (role === "user" && pathname !== "/profile" && pathname !== "/login-activity") {
       router.replace("/profile")
     }
   }, [role, pathname, router])

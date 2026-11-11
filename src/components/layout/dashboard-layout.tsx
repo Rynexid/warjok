@@ -9,6 +9,9 @@ import { Providers } from "@/components/providers"
 import { useBusinessStore } from "@/stores/business-store"
 import { useRealUser } from "@/hooks/use-real-user"
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { RefreshCw } from "lucide-react"
 
 const SIDEBAR_MIN_WIDTH = 200
 const SIDEBAR_MAX_WIDTH = 360
@@ -33,12 +36,31 @@ function BusinessDataLoader() {
   )
 }
 
+function BusinessErrorPanel() {
+  const error = useBusinessStore((state) => state.error)
+  const retry = useBusinessStore((state) => state.retryBusiness)
+
+  return (
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
+      <Alert variant="destructive">
+        <AlertTitle>Gagal memuat data bisnis</AlertTitle>
+        <AlertDescription>{error ?? "Terjadi kesalahan saat memuat data."}</AlertDescription>
+      </Alert>
+      <Button onClick={() => retry()} disabled={!retry}>
+        <RefreshCw className="mr-2 size-4" />
+        Coba lagi
+      </Button>
+    </div>
+  )
+}
+
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false)
   const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH)
   const [resizing, setResizing] = useState(false)
   const hydrate = useBusinessStore((state) => state.hydrate)
   const ready = useBusinessStore((state) => state.ready)
+  const error = useBusinessStore((state) => state.error)
   const realUser = useRealUser(true)
   const pathname = usePathname()
   const isRegularUser = realUser?.role === "user"
@@ -95,7 +117,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <AppHeader collapsed={collapsed} onToggle={setCollapsed} />
         <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-x-hidden">
           <Providers>
-            {shouldSkipBusinessLoad || ready ? children : <BusinessDataLoader />}
+            {shouldSkipBusinessLoad ? children : error ? (
+              <BusinessErrorPanel />
+            ) : ready ? (
+              children
+            ) : (
+              <BusinessDataLoader />
+            )}
           </Providers>
         </main>
       </div>

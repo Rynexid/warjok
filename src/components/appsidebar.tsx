@@ -22,6 +22,7 @@ import {
 
 import { NavUser } from "@/components/navuser"
 import { Logo } from "@/components/ui/logo"
+import { Badge } from "@/components/ui/badge"
 import {
   Tooltip,
   TooltipContent,
@@ -30,6 +31,8 @@ import {
 } from "@/components/ui/tooltip"
 import { useRealUser } from "@/hooks/use-real-user"
 import { cn } from "@/lib/utils"
+import { LogIn } from "lucide-react"
+import { startOrderNotify, stopOrderNotify, subscribeOrderNotify } from "@/features/storefront/order-notify"
 
 interface NavItem {
   href: string
@@ -134,6 +137,16 @@ export function AppSidebar({
     business: true,
     preferences: true,
   })
+  const [awaitingCount, setAwaitingCount] = useState(0)
+
+  useEffect(() => {
+    startOrderNotify(30000)
+    const unsub = subscribeOrderNotify((c) => setAwaitingCount(c))
+    return () => {
+      unsub()
+      stopOrderNotify()
+    }
+  }, [])
 
   // Filter nav items based on role
   const filteredNav = isRegularUser ? [] : NAV
@@ -314,6 +327,11 @@ export function AppSidebar({
                   >
                     <Icon className="size-4 shrink-0" />
                     <span className="flex-1 truncate">{item.label}</span>
+                    {item.href === "/order" && awaitingCount > 0 && (
+                      <Badge variant="destructive" className="shrink-0 animate-pulse">
+                        {awaitingCount}
+                      </Badge>
+                    )}
                   </Link>
                 )
               })}
@@ -381,7 +399,16 @@ export function AppSidebar({
               </Tooltip>
             ) : (
               <div className="space-y-1 px-1 text-sm text-muted-foreground">
-                <Link href="/profile" className="block rounded-lg px-2 py-2 hover:bg-accent hover:text-foreground">Profil</Link>
+                <Link href="/profile" className="block rounded-lg px-2 py-2 hover:bg-accent hover:text-foreground">
+                  Profil
+                </Link>
+                <Link
+                  href="/login-activity"
+                  className="block rounded-lg px-2 py-2 hover:bg-accent hover:text-foreground"
+                >
+                  <LogIn className="mr-2 size-3.5 shrink-0" />
+                  Aktivitas Login
+                </Link>
               </div>
             )
           ) : (

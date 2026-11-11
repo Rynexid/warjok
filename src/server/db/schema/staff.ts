@@ -212,3 +212,23 @@ export const cashMovements = s.table(
     check("CashMovements_Amount_check", sql`${t.amount} >= 0`),
   ]
 );
+
+/** Riwayat masuk staf. Setiap entri mencatat satu kali staf masuk ke sistem. */
+export const staffLoginSessions = s.table(
+  "StaffLoginSessions",
+  {
+    id: uuid("Id").defaultRandom().primaryKey(),
+    staffId: text("StaffId")
+      .notNull()
+      .references(() => staff.id, { onDelete: "cascade" }),
+    ipAddress: text("IpAddress"),
+    userAgent: text("UserAgent"),
+    createdAt: timestamp("CreatedAt", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (t) => [
+    index("StaffLoginSessions_StaffId_idx").on(t.staffId),
+    index("StaffLoginSessions_CreatedAt_idx").on(t.createdAt),
+  ]
+);

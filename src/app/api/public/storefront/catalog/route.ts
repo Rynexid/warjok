@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import { db } from "@/server/db";
@@ -6,13 +6,20 @@ import {
   businessSettings,
   categories,
   DEFAULT_BUSINESS_ID,
+  DEFAULT_STORE_ID,
   products,
   receiptSettings,
 } from "@/server/db/schema";
 
 export async function GET() {
+  let settings: any[] = [];
+  let receipt: any[] = [];
+  let categoryRows: any[] = [];
+  let productRows: any[] = [];
+  const errors: string[] = [];
+
   try {
-    const [settings, receipt] = await Promise.all([
+    [settings, receipt] = await Promise.all([
       db
         .select()
         .from(businessSettings)
@@ -24,23 +31,34 @@ export async function GET() {
         .where(
           and(
             eq(receiptSettings.businessId, DEFAULT_BUSINESS_ID),
-            eq(receiptSettings.storeId, "00000000-0000-0000-0000-000000000002"),
+            eq(receiptSettings.storeId, DEFAULT_STORE_ID),
           ),
         )
         .limit(1),
     ]);
+  } catch (error: any) {
+    console.error("Catalog settings error:", error?.message ?? error);
+    errors.push("settings");
+  }
 
-    const [categoryRows, productRows] = await Promise.all([
+  try {
+    [categoryRows, productRows] = await Promise.all([
       db
         .select()
         .from(categories)
         .where(eq(categories.businessId, DEFAULT_BUSINESS_ID)),
-      db
-        .select()
-        .from(products)
-        .where(eq(products.businessId, DEFAULT_BUSINESS_ID)),
+      db.select().from(products).where(eq(products.businessId, DEFAULT_BUSINESS_ID)),
     ]);
+  } catch (error: any) {
+    console.error("Catalog products error:", error?.message ?? error);
+    errors.push("products");
+  }
 
+  if (!settings.length && !categoryRows.length && !productRows.length && errors.length) {
+    console.error("Catalog unavailable, returning empty catalog shell:", errors);
+  }
+
+  try {
     const paymentMethods = [{ id: "qris", label: "QRIS" }];
 
     return NextResponse.json({
@@ -58,12 +76,12 @@ export async function GET() {
           qrisEnabled: true,
           methods: paymentMethods,
         },
-        categories: categoryRows.map((c) => ({
+        categories: categoryRows.map((c: any) => ({
           id: c.id,
           name: c.name,
           sortOrder: c.sortOrder,
         })),
-        products: productRows.map((p) => ({
+        products: productRows.map((p: any) => ({
           id: p.id,
           name: p.name,
           description: p.description,
@@ -71,9 +89,10 @@ export async function GET() {
           sellingPrice: Number(p.sellingPrice),
           imageUrl: p.imageUrl,
           isTaxable: p.isTaxable,
-          available: p.status === "active" && p.isStockTracked
-            ? Number(p.stockQuantity) > 0
-            : p.status === "active",
+          available:
+            p.status === "active" && p.isStockTracked
+              ? Number(p.stockQuantity) > 0
+              : p.status === "active",
           maxQuantity: p.isStockTracked ? Number(p.stockQuantity) : 99,
           variants: [],
         })),

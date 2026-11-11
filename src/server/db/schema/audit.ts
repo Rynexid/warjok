@@ -99,3 +99,27 @@ export const fileAttachments = s.table(
     index("FileAttachments_StorageKey_idx").on(t.storageKey),
   ]
 );
+
+/** Riwayat login per user. Setiap user hanya melihat aktivitas miliknya. */
+export const loginActivities = s.table(
+  "LoginActivities",
+  {
+    id: uuid("Id").defaultRandom().primaryKey(),
+    businessId: uuid("BusinessId")
+      .notNull()
+      .default(DEFAULT_BUSINESS_ID)
+      .references(() => businesses.id, { onDelete: "cascade" }),
+    userId: text("UserId").notNull(),
+    status: text("Status").notNull().default("success"),
+    ipAddress: text("IpAddress"),
+    userAgent: text("UserAgent"),
+    createdAt: timestamp("CreatedAt", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (t) => [
+    index("LoginActivities_BusinessId_idx").on(t.businessId),
+    index("LoginActivities_UserId_idx").on(t.userId),
+    index("LoginActivities_CreatedAt_idx").on(t.createdAt),
+  ]
+);

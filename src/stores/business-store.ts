@@ -64,6 +64,7 @@ type BusinessState = {
   movements: StockMovement[]
   settings: BusinessSettings
   ready: boolean
+  error: string | null
 
   hydrate: () => Promise<void>
 
@@ -97,6 +98,8 @@ type BusinessState = {
   voidTransaction: (id: string, reason: string) => ActionResult
 
   updateSettings: (patch: Partial<BusinessSettings>) => void
+  setError: (message: string | null) => void
+  retryBusiness: () => void
 }
 
 const uid = (prefix: string) =>
@@ -156,6 +159,7 @@ export const useBusinessStore = create<BusinessState>()((set, get) => ({
     receiptFooter: 'Terima kasih • Warjok',
   },
   ready: false,
+  error: null,
 
   hydrate: async () => {
     // Real data is fetched once by BusinessDataProvider via TanStack Query and
@@ -561,4 +565,10 @@ export const useBusinessStore = create<BusinessState>()((set, get) => ({
     set((state) => ({ settings: { ...state.settings, ...patch } }))
     void sync('settings.update', patch)
   },
+
+  setError: (message) => {
+    set({ error: message })
+  },
+
+  retryBusiness: () => {},
 }))

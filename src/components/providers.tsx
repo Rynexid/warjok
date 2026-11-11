@@ -23,15 +23,34 @@ export function BusinessDataProvider({
   children: React.ReactNode
 }) {
   const ready = useBusinessStore((state) => state.ready)
-  const { data, error, isPending } = useBusinessQuery({ enabled: true })
+  const error = useBusinessStore((state) => state.error)
+  const setError = useBusinessStore((state) => state.setError)
+  const { data, error: queryError, isPending, refetch } = useBusinessQuery({
+    enabled: true,
+  })
 
   useEffect(() => {
+    useBusinessStore.setState({ retryBusiness: refetch })
+  }, [refetch])
+
+  useEffect(() => {
+    if (queryError) {
+      setError(
+        queryError instanceof Error
+          ? queryError.message
+          : "Gagal memuat data bisnis.",
+      )
+    } else {
+      setError(null)
+    }
+
     // Sync whenever the query yields new data (first load, refetch after a
     // mutation, or recovery from a transient auth error).
     if (data) {
       useBusinessStore.setState({
         ...data,
         ready: true,
+        error: null,
       })
       return
     }
@@ -46,7 +65,7 @@ export function BusinessDataProvider({
         staff: [],
         transactions: [],
         movements: [],
-          settings: {
+        settings: {
           businessName: "Warjok POS",
           address: "",
           phone: "",
@@ -59,12 +78,13 @@ export function BusinessDataProvider({
           receiptFooter: "Terima kasih • Warjok",
         },
         ready: true,
+        error: null,
       })
     }
-  }, [data, isPending, ready])
+  }, [data, queryError, isPending, ready, setError])
 
-  if (error) {
-    console.error("Business data query error:", error)
+  if (queryError) {
+    console.error("Business data query error:", queryError)
   }
 
   return children

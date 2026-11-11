@@ -63,6 +63,20 @@ export function LoginForm({
         return
       }
 
+      // Catat aktivitas login ke server (tidak memblokir alur masuk).
+      void fetch("/api/auth/login-activity", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          status: "success",
+          ipAddress: null,
+          userAgent: navigator.userAgent,
+        }),
+      }).catch(() => {
+        // Abaikan gagal mencatat aktivitas login; masuk tetap berhasil.
+      })
+
       router.push("/menu")
       router.refresh()
     } catch (error) {
@@ -140,6 +154,15 @@ export function LoginForm({
           </div>
           <FieldError errors={[errors.password]} />
         </Field>
+
+        <div className="flex items-center justify-end">
+          <Link
+            href="/forgot-password"
+            className="text-sm text-foreground hover:text-primary underline underline-offset-4"
+          >
+            Lupa kata sandi?
+          </Link>
+        </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? (
