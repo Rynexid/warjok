@@ -267,7 +267,7 @@ function ProductFormBody({
                   <Input
                     type="number"
                     min={0}
-                    step={100}
+                    step={1}
                     inputMode="numeric"
                     value={field.value}
                     onChange={(event) =>
@@ -292,7 +292,7 @@ function ProductFormBody({
                   <Input
                     type="number"
                     min={0}
-                    step={100}
+                    step={1}
                     inputMode="numeric"
                     value={field.value}
                     onChange={(event) =>
