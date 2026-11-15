@@ -265,16 +265,14 @@ function ProductFormBody({
                 <FormLabel>Harga jual (Rp)</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    min={0}
-                    step={1}
+                    type="text"
                     inputMode="numeric"
-                    value={field.value}
-                    onChange={(event) =>
-                      field.onChange(
-                        event.target.value === '' ? 0 : Number(event.target.value),
-                      )
-                    }
+                    placeholder="0"
+                    value={field.value === 0 ? '' : String(field.value)}
+                    onChange={(event) => {
+                      const raw = event.target.value.replace(/[^\d]/g, '')
+                      field.onChange(raw === '' ? 0 : Number(raw))
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -290,16 +288,14 @@ function ProductFormBody({
                 <FormLabel>Harga modal (Rp)</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    min={0}
-                    step={1}
+                    type="text"
                     inputMode="numeric"
-                    value={field.value}
-                    onChange={(event) =>
-                      field.onChange(
-                        event.target.value === '' ? 0 : Number(event.target.value),
-                      )
-                    }
+                    placeholder="0"
+                    value={field.value === 0 ? '' : String(field.value)}
+                    onChange={(event) => {
+                      const raw = event.target.value.replace(/[^\d]/g, '')
+                      field.onChange(raw === '' ? 0 : Number(raw))
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
