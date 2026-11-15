@@ -9,14 +9,6 @@ import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
   Form,
   FormControl,
   FormDescription,
@@ -33,6 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import type { Category, Product } from '@/types/business'
 
 const productSchema = z.object({
@@ -68,16 +68,16 @@ export function ProductFormDialog({
   onSubmit: (values: ProductFormValues) => boolean
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92svh] overflow-y-auto sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>{product ? 'Edit produk' : 'Tambah produk'}</DialogTitle>
-          <DialogDescription>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-xl">
+        <SheetHeader className="border-b">
+          <SheetTitle>{product ? 'Edit produk' : 'Tambah produk'}</SheetTitle>
+          <SheetDescription>
             {product
               ? 'Perbarui informasi produk. Perubahan langsung dipakai di POS.'
               : 'Produk baru langsung tersedia di katalog POS setelah disimpan.'}
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
         <ProductFormBody
           key={product?.id ?? 'new'}
@@ -88,8 +88,8 @@ export function ProductFormDialog({
             if (onSubmit(values)) onOpenChange(false)
           }}
         />
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }
 
@@ -162,7 +162,7 @@ function ProductFormBody({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4"
+        className="flex flex-1 flex-col gap-4 overflow-y-auto p-4"
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
@@ -473,14 +473,14 @@ function ProductFormBody({
           />
         </div>
 
-        <DialogFooter>
+        <SheetFooter className="border-t px-0 pb-0 pt-4 sm:flex-row sm:justify-end">
           <Button type="button" variant="outline" onClick={onCancel}>
             Batal
           </Button>
           <Button type="submit">
             {product ? 'Simpan perubahan' : 'Tambah produk'}
           </Button>
-        </DialogFooter>
+        </SheetFooter>
       </form>
     </Form>
   )
