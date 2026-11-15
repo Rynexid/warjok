@@ -151,7 +151,13 @@ export function ProductsPage() {
       updateProduct(editing.id, values)
       toast.success('Produk diperbarui', { description: values.name })
     } else {
-      addProduct(values)
+      const result = addProduct(values)
+      if (!result.ok) {
+        toast.error('Produk tidak dapat ditambahkan', {
+          description: result.reason,
+        })
+        return false
+      }
       toast.success('Produk ditambahkan', { description: values.name })
     }
     return true

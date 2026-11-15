@@ -72,7 +72,7 @@ type BusinessState = {
   updateCategory: (id: string, input: CategoryInput) => void
   deleteCategory: (id: string) => ActionResult
 
-  addProduct: (input: ProductInput) => Product
+  addProduct: (input: ProductInput) => ActionResult
   updateProduct: (id: string, input: ProductInput) => void
   setProductStatus: (id: string, status: EntityStatus) => void
   deleteProduct: (id: string) => ActionResult
@@ -106,6 +106,13 @@ const uid = (prefix: string) =>
   `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`
 
 const nowIso = () => new Date().toISOString()
+
+/**
+ * Batas maksimal jumlah produk yang bisa dimiliki bisnis.
+ * Dihardcode di client dan divalidasi ulang di server (product.create)
+ * agar satu-satunya sumber kebenaran adalah database.
+ */
+const PRODUCT_LIMIT = 50
 
 const nextTransactionNumber = (transactions: Transaction[]) => {
   const highest = transactions.reduce((max, transaction) => {
@@ -213,6 +220,13 @@ export const useBusinessStore = create<BusinessState>()((set, get) => ({
   },
 
   addProduct: (input) => {
+    const current = get().products.length
+    if (current >= PRODUCT_LIMIT) {
+      return {
+        ok: false,
+        reason: `Batas maksimal ${PRODUCT_LIMIT} produk tercapai. Hapus atau arsipkan produk lama terlebih dahulu.`,
+      }
+    }
     const product: Product = {
       id: uid('prod'),
       name: input.name.trim(),
@@ -230,7 +244,7 @@ export const useBusinessStore = create<BusinessState>()((set, get) => ({
     }
     set((state) => ({ products: [product, ...state.products] }))
     void sync('product.create', product)
-    return product
+    return { ok: true }
   },
 
   updateProduct: (id, input) => {

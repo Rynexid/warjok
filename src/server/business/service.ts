@@ -13,6 +13,13 @@ import type {
   TransactionItem,
 } from "@/types/business";
 import { db } from "@/server/db";
+
+/**
+ * Batas maksimal jumlah produk yang bisa dimiliki bisnis.
+ * Dihardcode di client dan divalidasi ulang di server (product.create)
+ * agar satu-satunya sumber kebenaran adalah database.
+ */
+const PRODUCT_LIMIT = 50;
 import {
   businessSettings,
   categories,
@@ -433,6 +440,16 @@ export async function mutateBusiness(
       const id = requiredId(payload.id, "ID produk");
       const stock = Number(payload.stock ?? 0);
       const minStock = Number(payload.minStock ?? 0);
+
+      const existingCount = await db.$count(
+        products,
+        eq(products.businessId, DEFAULT_BUSINESS_ID),
+      );
+      if (existingCount >= PRODUCT_LIMIT) {
+        throw new Error(
+          `Batas maksimal ${PRODUCT_LIMIT} produk tercapai. Hapus atau arsipkan produk lama terlebih dahulu.`,
+        );
+      }
 
       await db.transaction(async (tx) => {
         await tx.insert(products).values({
